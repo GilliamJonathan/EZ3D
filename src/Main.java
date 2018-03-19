@@ -5,18 +5,12 @@
 
 import com.google.api.services.drive.Drive;
 import com.google.api.services.sheets.v4.Sheets;
-import com.interactivemesh.jfx.importer.ImportException;
-import com.interactivemesh.jfx.importer.stl.StlMeshImporter;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
-import javafx.scene.shape.MeshView;
-import javafx.scene.shape.TriangleMesh;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;

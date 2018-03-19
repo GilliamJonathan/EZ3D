@@ -1,7 +1,6 @@
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -12,8 +11,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import org.controlsfx.control.textfield.TextFields;
 
+import java.awt.*;
 import java.io.File;
-import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -50,8 +50,10 @@ public class EZ3DController extends Main {
     }
 
     @FXML
-    public void openDocumentation() {
-
+    public void openDocumentation() throws Exception{
+        if(Desktop.isDesktopSupported()) {
+            Desktop.getDesktop().browse(new URI("https://github.com/GilliamJonathan/EZ3D/wiki"));
+        }
     }
 
     // DISABLED

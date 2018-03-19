@@ -42,7 +42,7 @@
                               </Button>
                            </children>
                         </FlowPane>
-                        <Label fx:id="emailLabel" text="John.Doe@tamu.edu">
+                        <Label fx:id="emailLabel" text="">
                            <font>
                               <Font size="28.0" />
                            </font>
