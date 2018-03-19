@@ -9,6 +9,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.awt.*;
@@ -85,29 +86,35 @@ public class EZ3DController extends Main {
             ImageView image = new ImageView("simplify3dIcon.png");
             image.setFitHeight(80);
             image.setFitWidth(80);
-            image.setUserData(files[i]);
-            // Makes drag an drop work like file explore
-            image.setOnDragDetected(me -> {
-                Dragboard db = image.startDragAndDrop(TransferMode.ANY);
 
-                ArrayList<File> dragFiles = new ArrayList<>();
-                dragFiles.add((File)image.getUserData());
-                filesToCopyClipboard.putFiles(dragFiles);
-
-                db.setContent(filesToCopyClipboard);
-                me.consume();
-            });
-            image.setOnDragDone(Event::consume);
-
-            Label text = new Label(" " + ((new Date().getTime() - files[i].lastModified()) / (1000 * 60 * 60)) + " hours old");
+            Label text = new Label(((new Date().getTime() - files[i].lastModified()) / (1000 * 60 * 60)) + " hours old");
             text.setMaxWidth(80);
             text.setFont(Font.font("Verdana", FontWeight.BOLD, 10));
+            text.setAlignment(Pos.CENTER);
 
             StackPane sp = new StackPane();
             sp.getChildren().add(image);
             sp.getChildren().add(text);
             sp.setAlignment(Pos.CENTER);
             sp.setMinSize(95, 100);
+            sp.setUserData(files[i]);
+            // Makes drag an drop work like file explore
+            sp.setOnDragDetected(me -> {
+                Dragboard db = sp.startDragAndDrop(TransferMode.ANY);
+
+                File file = ((File)sp.getUserData());
+
+                ArrayList<File> dragFiles = new ArrayList<>();
+                dragFiles.add(file);
+                filesToCopyClipboard.putFiles(dragFiles);
+
+                db.setContent(filesToCopyClipboard);
+                me.consume();
+                System.out.println("1");
+            });
+            sp.setOnDragDone(me -> {
+                filesToCopyClipboard.clear();
+            });
 
             filesGrid.add(sp, i%5, 0);
 

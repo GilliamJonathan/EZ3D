@@ -19,19 +19,16 @@ import java.util.regex.Pattern;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class Main extends Application {
+    private static final String home = System.getProperty("user.home") + "\\EZ3D";
 
-    /* Get user properties from config file */
+    // Get user properties
     private static Properties prop = new Properties();
     static {
         try {
-            prop.load(new FileInputStream("EZ3D.properties"));
+            prop.load(new FileInputStream(home + "\\EZ3D.properties"));
         }
-        catch(FileNotFoundException e) {
-            File file = new File("EZ3D.properties");
-            //noinspection ResultOfMethodCallIgnored
-            file.getParentFile().mkdirs();
-        }
-        catch(IOException e) {
+        catch(Exception e)
+        {
             e.printStackTrace();
             System.exit(1);
         }
@@ -172,6 +169,8 @@ public class Main extends Application {
 
         // Gets the title row from the sheet
         String titleRange = prop.getProperty("SHEET_NAME") + "!A1:1";
+        System.out.println("Spreadsheet id:" + prop.getProperty("SPREADSHEET_ID"));
+
         ArrayList<String> titleResult = (ArrayList<String>)(sheetService.spreadsheets().values()
                 .get(prop.getProperty("SPREADSHEET_ID"), titleRange)
                 .execute().getValues().toArray()[0]);

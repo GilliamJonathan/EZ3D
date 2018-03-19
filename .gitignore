@@ -27,3 +27,4 @@ client_secret*
 files/*
 .idea/*
 out/*
+*.xml
