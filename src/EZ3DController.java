@@ -7,6 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
@@ -14,6 +15,7 @@ import org.controlsfx.control.textfield.TextFields;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,10 +59,9 @@ public class EZ3DController extends Main {
         }
     }
 
-    // DISABLED
     @FXML
-    public void openConfigFile() {
-
+    public void openConfigFile() throws IOException {
+        Desktop.getDesktop().open(new File("EZ3D.properties"));
     }
 
     // DISABLED
@@ -92,17 +93,17 @@ public class EZ3DController extends Main {
             text.setFont(Font.font("Verdana", FontWeight.BOLD, 10));
             text.setAlignment(Pos.CENTER);
 
-            StackPane sp = new StackPane();
-            sp.getChildren().add(image);
-            sp.getChildren().add(text);
-            sp.setAlignment(Pos.CENTER);
-            sp.setMinSize(95, 100);
-            sp.setUserData(files[i]);
+            VBox vb = new VBox();
+            vb.getChildren().add(image);
+            vb.getChildren().add(text);
+            vb.setAlignment(Pos.CENTER);
+            vb.setMinSize(95, 100);
+            vb.setUserData(files[i]);
             // Makes drag an drop work like file explore
-            sp.setOnDragDetected(me -> {
-                Dragboard db = sp.startDragAndDrop(TransferMode.ANY);
+            vb.setOnDragDetected(me -> {
+                Dragboard db = vb.startDragAndDrop(TransferMode.ANY);
 
-                File file = ((File)sp.getUserData());
+                File file = ((File)vb.getUserData());
 
                 ArrayList<File> dragFiles = new ArrayList<>();
                 dragFiles.add(file);
@@ -112,11 +113,11 @@ public class EZ3DController extends Main {
                 me.consume();
                 System.out.println("1");
             });
-            sp.setOnDragDone(me -> {
+            vb.setOnDragDone(me -> {
                 filesToCopyClipboard.clear();
             });
 
-            filesGrid.add(sp, i%5, 0);
+            filesGrid.add(vb, i%5, 0);
 
             if (i == 4)
                 break;
