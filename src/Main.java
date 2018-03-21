@@ -28,7 +28,7 @@ public class Main extends Application {
     private static Properties prop = new Properties();
     static {
         try {
-            prop.load(new FileInputStream(home + "\\EZ3D.properties"));
+            prop.load(new FileInputStream(System.getProperty("user.home") + "\\EZ3D\\EZ3D.properties"));
         }
         catch(Exception e)
         {
@@ -85,16 +85,6 @@ public class Main extends Application {
     /**
      * Goes through given directory, and gets all files inside it and it's subdirectories
      * @param folder The directory you want to search through
-     * @return List off files in directory/subdirectories, excluding directories
-     * @deprecated use filesInDirectory(File folder, boolean includeDir) instead
-     */
-    static ArrayList<File> filesInDirectory(File folder) {
-        return filesInDirectory(folder, false);
-    }
-
-    /**
-     * Goes through given directory, and gets all files inside it and it's subdirectories
-     * @param folder The directory you want to search through
      * @param includeDir weather to include directories
      * @return List off files in directory/subdirectories
      */
@@ -114,7 +104,8 @@ public class Main extends Application {
                 files.add(file);
         }
         // Sort files by last modified date, newest first
-        //files.sort(Comparator.comparingLong(File::lastModified));
+        files.sort(Comparator.comparingLong(File::lastModified));
+
         return files;
     }
 
@@ -139,21 +130,22 @@ public class Main extends Application {
                 continue;
             }
 
-            String path = String.format("files\\%s\\%c_%s_%s_0.stl",
-                    data.get(0).get(i), data.get(1).get(i).charAt(0), data.get(2).get(i),
-                    data.get(5).get(i));
-
-            File file = new File(path);
-
             if (diff < Float.parseFloat(prop.getProperty("FILE_RETENTION_PERIOD"))) {
+                // build user's file path
+                String path = String.format("files\\%s\\%c_%s_%s_0.stl",
+                        data.get(0).get(i), data.get(1).get(i).charAt(0), data.get(2).get(i),
+                        data.get(5).get(i));
+
+                File file = new File(path);
+
                 //noinspection ResultOfMethodCallIgnored
                 file.getParentFile().mkdirs();
 
-                if (!file.exists()) {
+                if (!file.exists() && data.get(3).size() > i) {
                     Pattern pattern = Pattern.compile("[-\\w]{25,}");
                     Matcher matcher = pattern.matcher(data.get(3).get(i));
 
-                    for (int j =0; matcher.find(); j++) {
+                    for (int j=0; matcher.find(); j++) {
                         System.out.println("downloading file " + matcher.group() + " for " + data.get(0).get(i));
 
                         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -161,10 +153,9 @@ public class Main extends Application {
                                 .executeMediaAndDownloadTo(outputStream);
 
                         outputStream.writeTo(new FileOutputStream(path));
+                        outputStream.close();
 
                         path.replace(j + ".stl", j+1 + ".stl");
-
-                        outputStream.close();
                     }
                 }
             }
@@ -188,12 +179,12 @@ public class Main extends Application {
                 .execute().getValues().toArray()[0]);
 
         // Gets correct title labels we're looking for from config file
-        String[] labels = {prop.getProperty("EMAIL_COLUMN_LABEL"),
-                prop.getProperty("FIRST_NAME_COLUMN_LABEL"),
-                prop.getProperty("LAST_NAME_COLUMN_LABEL"),
-                prop.getProperty("DRIVE_LINKS_COLUMN_LABEL"),
-                prop.getProperty("TIMESTAMP_COLUMN_LABEL"),
-                prop.getProperty("PRINT_ID_COLUMN_LABEL")
+        String[] labels = {prop.getProperty("EMAIL_COLUMN_LABEL", "Email"),
+                prop.getProperty("FIRST_NAME_COLUMN_LABEL", "First Name"),
+                prop.getProperty("LAST_NAME_COLUMN_LABEL", "Last Name"),
+                prop.getProperty("DRIVE_LINKS_COLUMN_LABEL", "Files"),
+                prop.getProperty("TIMESTAMP_COLUMN_LABEL", "Timestamp"),
+                prop.getProperty("PRINT_ID_COLUMN_LABEL", "Print ID")
         };
 
         for (String label : labels) {

@@ -14,6 +14,7 @@ import org.controlsfx.control.textfield.TextFields;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,10 +58,9 @@ public class EZ3DController extends Main {
         }
     }
 
-    // DISABLED
     @FXML
-    public void openConfigFile() {
-
+    public void openConfigFile() throws IOException {
+        Desktop.getDesktop().open(new File("EZ3D.properties"));
     }
 
     // DISABLED

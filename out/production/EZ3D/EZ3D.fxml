@@ -90,7 +90,7 @@
           <Menu mnemonicParsing="false" text="Help">
             <items>
                   <MenuItem mnemonicParsing="false" onAction="#openDocumentation" text="Documentation" />
-                  <MenuItem disable="true" mnemonicParsing="false" onAction="#openConfigFile" text="Config File" />
+                  <MenuItem mnemonicParsing="false" onAction="#openConfigFile" text="Config File" />
               <MenuItem disable="true" mnemonicParsing="false" onAction="#openAbout" text="About" />
             </items>
           </Menu>
