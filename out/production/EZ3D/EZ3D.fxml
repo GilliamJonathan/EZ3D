@@ -10,9 +10,6 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="EZ3DController">
-   <right>
-      <ScrollBar orientation="VERTICAL" BorderPane.alignment="CENTER" />
-   </right>
    <center>
       <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
@@ -42,7 +39,7 @@
                               </Button>
                            </children>
                         </FlowPane>
-                        <Label fx:id="emailLabel" text="John.Doe@tamu.edu">
+                        <Label fx:id="emailLabel" text="">
                            <font>
                               <Font size="28.0" />
                            </font>
@@ -93,8 +90,8 @@
           <Menu mnemonicParsing="false" text="Help">
             <items>
                   <MenuItem mnemonicParsing="false" onAction="#openDocumentation" text="Documentation" />
-                  <MenuItem mnemonicParsing="false" onAction="#openConfigFile" text="Config File" />
-              <MenuItem mnemonicParsing="false" onAction="#openAbout" text="About" />
+                  <MenuItem disable="true" mnemonicParsing="false" onAction="#openConfigFile" text="Config File" />
+              <MenuItem disable="true" mnemonicParsing="false" onAction="#openAbout" text="About" />
             </items>
           </Menu>
         </menus>
