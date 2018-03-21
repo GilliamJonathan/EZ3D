@@ -2,6 +2,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -41,9 +42,10 @@ public class GoogleServices
     private static FileDataStoreFactory DATA_STORE_FACTORY;
     private static final java.io.File DATA_STORE_DIR = new java.io.File(home);
     private static HttpTransport HTTP_TRANSPORT;
-    private static final List<String> SCOPES =
-            Arrays.asList(SheetsScopes.SPREADSHEETS_READONLY);
+    private static final ArrayList<String> SCOPES = new ArrayList<>();
+
     static {
+        SCOPES.addAll(SheetsScopes.all());
         try {
             System.out.println(DATA_STORE_DIR);
             HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();

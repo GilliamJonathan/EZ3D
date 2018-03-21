@@ -13,12 +13,15 @@ import javafx.stage.Stage;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class Main extends Application {
+    public Scene scene;
+
     private static final String home = System.getProperty("user.home") + "\\EZ3D";
 
     // Get user properties
@@ -122,16 +125,23 @@ public class Main extends Application {
     static void refreshFiles() throws IOException {
         refreshData();
 
-        for(int i=0; i<data.size(); i++) {
+        for(int i=0; i<data.get(0).size(); i++) {
+            if (data.get(0).get(i).equals("") || data.get(1).get(i).equals("") || data.get(2).get(i).equals("") || data.get(3).get(i).equals("") || data.get(4).get(i).equals(""))
+                continue;
+
+            long diff;
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/y H:m:s");
+            try {
+                LocalDateTime dateTime1 = LocalDateTime.parse(data.get(4).get(i), formatter);
+                LocalDateTime dateTime2 = LocalDateTime.now();
+                diff = java.time.Duration.between(dateTime1, dateTime2).toDays();
+            } catch (DateTimeParseException dtpe) {
+                continue;
+            }
 
-            LocalDateTime dateTime1 = LocalDateTime.parse(data.get(4).get(i), formatter);
-            LocalDateTime dateTime2 = LocalDateTime.now();
-            long diff = java.time.Duration.between(dateTime1, dateTime2).toDays();
-
-            String path = String.format("files\\%s\\%c_%s_%s.stl",
+            String path = String.format("files\\%s\\%c_%s_%s_0.stl",
                     data.get(0).get(i), data.get(1).get(i).charAt(0), data.get(2).get(i),
-                    data.get(4).get(i)).replaceAll("[/:]", "").replace(" ", "@");
+                    data.get(5).get(i));
 
             File file = new File(path);
 
@@ -143,7 +153,7 @@ public class Main extends Application {
                     Pattern pattern = Pattern.compile("[-\\w]{25,}");
                     Matcher matcher = pattern.matcher(data.get(3).get(i));
 
-                    while (matcher.find()) {
+                    for (int j =0; matcher.find(); j++) {
                         System.out.println("downloading file " + matcher.group() + " for " + data.get(0).get(i));
 
                         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -151,6 +161,8 @@ public class Main extends Application {
                                 .executeMediaAndDownloadTo(outputStream);
 
                         outputStream.writeTo(new FileOutputStream(path));
+
+                        path.replace(j + ".stl", j+1 + ".stl");
 
                         outputStream.close();
                     }
@@ -176,11 +188,12 @@ public class Main extends Application {
                 .execute().getValues().toArray()[0]);
 
         // Gets correct title labels we're looking for from config file
-        String[] labels = {prop.getProperty("EMAIL_COLUMN_LABEL", "Email"),
-                prop.getProperty("FIRST_NAME_COLUMN_LABEL", "First Name"),
-                prop.getProperty("LAST_NAME_COLUMN_LABEL", "Last Name"),
-                prop.getProperty("DRIVE_LINKS_COLUMN_LABEL", "Files"),
-                prop.getProperty("TIMESTAMP_COLUMN_LABEL", "Timestamp")
+        String[] labels = {prop.getProperty("EMAIL_COLUMN_LABEL"),
+                prop.getProperty("FIRST_NAME_COLUMN_LABEL"),
+                prop.getProperty("LAST_NAME_COLUMN_LABEL"),
+                prop.getProperty("DRIVE_LINKS_COLUMN_LABEL"),
+                prop.getProperty("TIMESTAMP_COLUMN_LABEL"),
+                prop.getProperty("PRINT_ID_COLUMN_LABEL")
         };
 
         for (String label : labels) {
@@ -202,7 +215,10 @@ public class Main extends Application {
                 // Rotate result into a row, and add it to data
                 ArrayList<String> temp = new ArrayList<>();
                 for (List<Object> result : results) {
-                    temp.add(result.get(0).toString());
+                    if (result.isEmpty())
+                        temp.add("");
+                    else
+                        temp.add(result.get(0).toString());
                 }
                 data.add(temp);
             }
@@ -213,7 +229,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("EZ3D.fxml"));
         primaryStage.setTitle("EZ3D");
-        primaryStage.setScene(new Scene(root, 500, 300));
+        primaryStage.setScene(scene = new Scene(root, 500, 300));
         primaryStage.setOnCloseRequest(e -> System.exit(1));
         primaryStage.show();
     }
@@ -234,8 +250,7 @@ public class Main extends Application {
                     if (prop.getProperty("REMOVE_OLD_FILES", "true").equalsIgnoreCase("true"))
                         deleteOldFiles();
                     Thread.sleep((long) (Float.parseFloat(prop.getProperty("FILE_REFRESH_RATE")) * 60 * 1000));
-                } catch (InterruptedException ignored) {
-                } catch(IOException ioe){
+                } catch(Exception ioe){
                     ioe.printStackTrace();
                     System.exit(1);
                 }
