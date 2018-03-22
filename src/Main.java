@@ -130,7 +130,7 @@ public class Main extends Application {
                 continue;
             }
 
-            if (diff < Float.parseFloat(prop.getProperty("FILE_RETENTION_PERIOD"))) {
+            if (diff < Float.parseFloat(prop.getProperty("FILE_RETENTION_PERIOD")) && data.size() >= 5) {
                 // build user's file path
                 String path = String.format("files\\%s\\%c_%s_%s_0.stl",
                         data.get(0).get(i), data.get(1).get(i).charAt(0), data.get(2).get(i),
