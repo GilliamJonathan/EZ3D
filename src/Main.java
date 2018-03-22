@@ -155,7 +155,7 @@ public class Main extends Application {
                         outputStream.writeTo(new FileOutputStream(path));
                         outputStream.close();
 
-                        path.replace(j + ".stl", j+1 + ".stl");
+                        path = path.replace(j + ".stl", (j+1) + ".stl");
                     }
                 }
             }
