@@ -25,7 +25,9 @@ hs_err_pid*
 StoredCredential
 client_secret*
 files/*
-.idea/*
+workspace.xml
 out/*
 *.xml
 *.MF
+*.iml
+
